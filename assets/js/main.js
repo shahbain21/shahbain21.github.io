@@ -267,4 +267,60 @@
    */
   new PureCounter();
 
-})()
+  /**
+   * Portfolio Video Preview on Hover
+   */
+  window.addEventListener('load', () => {
+
+    // Small delay to let Isotope finish arranging
+    setTimeout(() => {
+
+      // Desktop: hover to play
+      document.querySelectorAll('.portfolio-wrap').forEach(card => {
+        const video = card.querySelector('.portfolio-video');
+        if (!video) return;
+
+        card.addEventListener('mouseenter', () => {
+          video.currentTime = 0;
+          const playPromise = video.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(() => {});
+          }
+        });
+
+        card.addEventListener('mouseleave', () => {
+          video.pause();
+          video.currentTime = 0;
+        });
+      });
+
+      // Mobile: tap to toggle
+      if ('ontouchstart' in window) {
+        document.querySelectorAll('.portfolio-wrap').forEach(card => {
+          const video = card.querySelector('.portfolio-video');
+          if (!video) return;
+          let playing = false;
+
+          card.addEventListener('click', (e) => {
+            if (e.target.closest('.portfolio-links')) return;
+
+            if (playing) {
+              video.pause();
+              video.style.opacity = '0';
+              card.querySelector('img').style.opacity = '1';
+            } else {
+              video.style.opacity = '1';
+              card.querySelector('img').style.opacity = '0';
+              video.currentTime = 0;
+              video.play().catch(() => {});
+            }
+            playing = !playing;
+          });
+        });
+      }
+
+    }, 500);
+
+  });
+
+})();
